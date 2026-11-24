@@ -1,0 +1,23 @@
+#!/bin/sh
+# Runs the testq and installer tests; CI (Jenkinsfile) and local checks use the same command.
+set -eu
+
+ROOT=$(CDPATH= cd "$(dirname "$0")/.." && pwd)
+PYTHON_IMAGE='python:3-alpine'
+CMD="python3 -m unittest discover -s skills/test-queue/scripts -p 'test_*.py'"
+
+cd "${ROOT}"
+
+if command -v python3 >/dev/null 2>&1; then
+    exec sh -c "${CMD}"
+fi
+
+if ! command -v docker >/dev/null 2>&1 || ! docker info >/dev/null 2>&1; then
+    echo 'scripts/test needs python3 or a running Docker daemon.' >&2
+    exit 1
+fi
+
+# Stream the tree into the container instead of bind-mounting it, so the check also works
+# when the Docker daemon runs on another host than this workspace.
+tar -cf - skills |
+    docker run --rm -i "${PYTHON_IMAGE}" sh -c "mkdir /work && cd /work && tar -xf - && ${CMD}"

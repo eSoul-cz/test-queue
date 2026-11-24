@@ -56,7 +56,11 @@ From the repository root:
 python3 -m unittest discover -s skills/test-queue/scripts -p 'test_*.py'
 ```
 
-`test_testq.py` covers classification, limits, admission, estimates and runs of the CLI; `test_install.py` runs `install.sh` with `HOME` in a temporary directory against a fixture `settings.json` (hook added once, idempotent re-run, `--no-hook`, `--uninstall`, invalid JSON aborts unchanged). The widget compile is not tested. GitHub Actions runs both on Ubuntu.
+`test_testq.py` covers classification, limits, admission, estimates and runs of the CLI; `test_install.py` runs `install.sh` with `HOME` in a temporary directory against a fixture `settings.json` (hook added once, idempotent re-run, `--no-hook`, `--uninstall`, invalid JSON aborts unchanged). The widget compile is not tested.
+
+## CI
+
+Jenkins runs the `Jenkinsfile`: checkout, then `scripts/test`, which runs the command above with the node's `python3`, or in a `python:3-alpine` container when the node has none.
 
 ## Licence
 
