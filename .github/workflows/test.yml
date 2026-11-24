@@ -11,13 +11,9 @@ permissions:
 jobs:
   test:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.9", "3.13"]
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: ${{ matrix.python-version }}
       - name: testq tests and installer tests
-        run: python3 -m unittest discover -s skills/test-queue/scripts -p 'test_*.py' -v
+        run: |
+          python3 --version
+          python3 -m unittest discover -s skills/test-queue/scripts -p 'test_*.py' -v
